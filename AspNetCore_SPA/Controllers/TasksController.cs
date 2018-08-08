@@ -13,10 +13,15 @@ namespace AspNetCore_SPA.Controllers
         private readonly ITaskRepository _taskRepository;
         private readonly ILogger _logger;
 
+        private object _lockObject = new object();
+        private static bool _seeded;
+
         public TasksController(ITaskRepository taskRepository, ILogger<TasksController> logger)
         {
             _taskRepository = taskRepository;
             _logger = logger;
+
+            SeedTasks();
         }
 
         [HttpGet("status/completed")]
@@ -29,7 +34,7 @@ namespace AspNetCore_SPA.Controllers
                 var result = await _taskRepository.GetAllCompletedAsync();
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -64,8 +69,10 @@ namespace AspNetCore_SPA.Controllers
                 var result = await _taskRepository.FindAsync(x => x.Id == id);
                 if (result == null)
                 {
+                    _logger.LogWarning($"GetById({id}) NOT FOUND");
                     return NotFound();
                 }
+                _logger.LogDebug($"GetById({id}) OK");
                 return Ok(result);
             }
             catch (Exception ex)
@@ -79,7 +86,7 @@ namespace AspNetCore_SPA.Controllers
         [ProducesResponseType(201, Type = typeof(Entities.Tasks.Task))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> AddAsync([FromBody]Entities.Tasks.Task task)
+        public async Task<IActionResult> PostAsync([FromBody]Entities.Tasks.Task task)
         {
             try
             {
@@ -88,34 +95,20 @@ namespace AspNetCore_SPA.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await _taskRepository.AddAsync(task);
+                if (await _taskRepository.ExistsAsync(x => x.Id == task.Id))
+                {
+                    await _taskRepository.UpdateAsync(task);
+                    _logger.LogDebug($"UpdateAsync with Name:'{task.Name}' successful.");
+                }
+                else
+                {
+                    await _taskRepository.AddAsync(task);
+                    _logger.LogDebug($"AddAsync with Name:'{task.Name}' successful.");
+                }
+
                 await _taskRepository.SaveAsync();
 
                 return CreatedAtAction(nameof(GetByIdAsync), new { id = task.Id }, task);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpPut]
-        [ProducesResponseType(200, Type = typeof(Entities.Tasks.Task))]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> UpdateAsync([FromBody]Entities.Tasks.Task task)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                await _taskRepository.UpdateAsync(task);
-                await _taskRepository.SaveAsync();
-                return Ok(task);
             }
             catch (Exception ex)
             {
@@ -133,12 +126,60 @@ namespace AspNetCore_SPA.Controllers
             {
                 int result = await _taskRepository.DeleteAsync(id);
                 await _taskRepository.SaveAsync();
+
+                _logger.LogInformation($"DeleteAsync({id}) OK.");
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        private bool SeedTasks()
+        {
+            try
+            {
+                if (_seeded == false)
+                {
+                    lock (_lockObject)
+                    {
+                        if (_seeded == false)
+                        {
+                            _taskRepository.AddAsync(new Entities.Tasks.Task
+                            {
+                                Name = "Test1",
+                                Description = "SomeTask"
+                            });
+
+                            _taskRepository.AddAsync(new Entities.Tasks.Task
+                            {
+                                Name = "Get eggs",
+                                Description = "From the local grocery"
+                            });
+
+
+                            _taskRepository.AddAsync(new Entities.Tasks.Task
+                            {
+                                Name = "Write app for bim.point.com",
+                                Description = "SPA web app based on ASP.NET Core"
+                            });
+
+                            _taskRepository.SaveAsync();
+                            _seeded = true;
+
+                            _logger.LogDebug("Db seeded with sample tasks records");
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return false;
             }
         }
     }

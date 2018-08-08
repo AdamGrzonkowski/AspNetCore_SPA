@@ -9,5 +9,6 @@ namespace Entities.Base
         public Guid Id { get; set; }
         public DateTime InsTs { get; set; }
         public DateTime UpdTs { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

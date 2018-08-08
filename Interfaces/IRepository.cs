@@ -19,6 +19,7 @@ namespace Interfaces
         Task<ICollection<T>> GetAllAsync();
         Task<T> GetAsync(int id);
 
+        Task<bool> ExistsAsync(Expression<Func<T, bool>> match);
         Task<T> FindAsync(Expression<Func<T, bool>> match);
         Task<ICollection<T>> FindByAsync(Expression<Func<T, bool>> predicate);
 

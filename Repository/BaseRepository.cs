@@ -26,14 +26,17 @@ namespace Repository
             t.UpdTs = dt;
 
             _context.Set<T>().Add(t);
-            await _context.SaveChangesAsync();
+            await SaveAsync();
             return t;
         }
 
         public async Task<int> DeleteAsync(T entity)
         {
-            _context.Set<T>().Remove(entity);
-            return await _context.SaveChangesAsync();
+            // do not remove entirely. Instead, use deferred deletion and only mark as deleted.
+            entity.IsDeleted = true;
+            _context.Entry(entity).Property(x => x.IsDeleted).IsModified = true;
+
+            return await SaveAsync();
         }
 
         public async Task<int> DeleteAsync(Guid id)
@@ -45,6 +48,11 @@ namespace Repository
             }
 
             return 0;
+        }
+
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> match)
+        {
+            return await GetAll().AnyAsync(match);
         }
 
         public async Task<T> FindAsync(Expression<Func<T, bool>> match)
@@ -59,7 +67,7 @@ namespace Repository
 
         public IQueryable<T> GetAll()
         {
-            return _context.Set<T>();
+            return _context.Set<T>().Where(x => x.IsDeleted == false);
         }
 
         public async Task<ICollection<T>> GetAllAsync()
@@ -87,9 +95,15 @@ namespace Repository
             T entity = await _context.Set<T>().FindAsync(t.Id);
             if (entity != null)
             {
-                _context.Entry(entity).CurrentValues.SetValues(t);
+                // dedicated mappers should be used instead of this method, as it overwrites all values, but since it's a test application, then we're using this approach.
+                _context.Entry(entity).CurrentValues.SetValues(t); 
+
+                // do not modify id and inserted timestamp
+                _context.Entry(entity).Property(x => x.Id).IsModified = false;
+                _context.Entry(entity).Property(x => x.InsTs).IsModified = false;
+
                 entity.UpdTs = DateTime.Now;
-                await _context.SaveChangesAsync();
+                await SaveAsync();
             }
             return entity;
         }

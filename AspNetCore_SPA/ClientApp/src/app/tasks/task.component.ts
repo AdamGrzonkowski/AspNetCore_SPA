@@ -3,11 +3,13 @@ import { Task, TaskService } from "./task.service";
 
 @Component({
   selector: 'app-task',
-  templateUrl: './task.component.html'
+  templateUrl: './task.component.html',
+  styleUrls: ['./task.component.css']
 })
 
 export class TaskComponent implements OnInit {
   tasks: Array<Task> = [];
+  public editing: boolean = false;
   currentTask: Task = new Task();
 
   constructor(private taskService: TaskService) { }
@@ -18,25 +20,16 @@ export class TaskComponent implements OnInit {
       .subscribe(tasks => (this.tasks = tasks));
   }
 
-  async addTask() {
+  async upsertTask() {
     await this.taskService
-      .add(this.currentTask)
+      .upsert(this.currentTask)
       .subscribe(task => {
         if (!this.currentTask.id) {
           this.tasks.push(task);
         }
-        this.currentTask = new Task();
-      });
-  }
 
-  async updateTask() {
-    await this.taskService
-      .update(this.currentTask)
-      .subscribe(task => {
-        if (!this.currentTask.id) {
-          this.tasks.push(task);
-        }
         this.currentTask = new Task();
+        this.editing = false;
       });
   }
 
@@ -48,6 +41,17 @@ export class TaskComponent implements OnInit {
   }
 
   selectTask(task: Task) {
-    this.currentTask = task;
+    if (this.currentTask == task) {
+      this.currentTask = new Task();
+      this.editing = false;
+    } else {
+      this.currentTask = task;
+      this.editing = true;
+    }
+  }
+
+  newTask() {
+    this.currentTask = new Task();
+    this.editing = !this.editing;
   }
 }

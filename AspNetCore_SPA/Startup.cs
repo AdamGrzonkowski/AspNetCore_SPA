@@ -1,3 +1,4 @@
+using GlobalConfiguration;
 using Interfaces.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Repository;
 using Repository.Tasks;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 
 namespace AspNetCore_SPA
 {
@@ -27,14 +29,30 @@ namespace AspNetCore_SPA
         public void ConfigureServices(IServiceCollection services)
         {
             // MVC and XSRF
-            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
-            services.AddMvc(options =>
+            services.AddMvc(
+            //options =>
+            //{
+            //    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); // XSRF seems to be bugged right now with this combination of ASP.NET Core / Angular 6 versions. To be reviewed later on
+            //}
+            ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAntiforgery(options => {
+                options.HeaderName = "X-XSRF-TOKEN";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
+            services.AddHsts(options =>
             {
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                options.Preload = false ;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(1);
+            }); // on Prod, this should be preloaded and MaxAge set to at least 2 years
 
             // Data access
             services.AddDbContext<SpaContext>(options => options.UseInMemoryDatabase("InMemoryDb"), ServiceLifetime.Scoped); // using in-memory db gives us opportunity to write abstraction early on and then easily change data store
+
+            // Dependency Injection
+            services.AddSingleton<IGlobalConfig, GlobalConfig>();
             services.AddScoped<ITaskRepository, TaskRepository>();
 
             // In production, the Angular files will be served from this directory
@@ -84,7 +102,7 @@ namespace AspNetCore_SPA
                 .DefaultSources(s => s.Self())
                 .ScriptSources(x => x.Self().UnsafeEval()) // unsafe required for Angular
                 .StyleSources(x => x.Self().UnsafeInline()) // unsafe required for Angular
-                .ConnectSources(x => x.Self().CustomSources("wss://localhost:44353"))
+                .ConnectSources(x => x.Self().CustomSources("wss://localhost:*"))
             );
 
             app.Use(async (context, next) =>
@@ -98,13 +116,15 @@ namespace AspNetCore_SPA
                       tokens.RequestToken, new CookieOptions
                       {
                           HttpOnly = false,
-                          Secure = true
+                          Secure = true,
+                          Path = "/"
                       }
                     );
                 }
 
                 await next();
             });
+
 
             // Allow usage of static files
             app.UseStaticFiles();

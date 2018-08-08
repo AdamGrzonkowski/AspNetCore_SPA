@@ -18,26 +18,22 @@ export class TaskService {
     return this.http.get<Array<Task>>(this.apiUrl);
   }
 
-  getAllNotCompleted(): Observable<Array<Task>> {
+  getAllCompleted(): Observable<Array<Task>> {
     return this.http.get<Array<Task>>(this.apiUrl + '/status/completed');
   }
 
-  add(task: Task): Observable<Task> {
+  upsert(task: Task): Observable<Task> {
     return this.http.post<Task>(this.apiUrl, task);
   }
 
-  update(task: Task): Observable<Task> {
-    return this.http.put<Task>(this.apiUrl, task);
-  }
-
-  delete(id: AAGUID): Observable<any> {
+  delete(id: string): Observable<any> {
     return this.http.delete<Task>(`${this.apiUrl}/${id}`);
   }
 }
 
 export class Task
 {
-  id: AAGUID;
+  id: string;
   name: string;
   description: string;
   completed: boolean;
