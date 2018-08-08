@@ -1,22 +1,35 @@
 <h1>ToDo List</h1>
 
-<p>Simpl ToDo list.</p>
+<p>Manage your tasks.</p>
 
 <p *ngIf="!tasks"><em>Loading...</em></p>
 
 <table class='table' *ngIf="tasks">
   <thead>
     <tr>
+      <th>No.</th>
       <th>Name</th>
       <th>Description</th>
       <th>Complete</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let task of tasks">
+    <tr *ngFor="let task of tasks; let i = index; trackBy: id">
+      <td>{{ i+1 }}</td>
       <td>{{ task.name }}</td>
       <td>{{ task.description }}</td>
       <td>{{ task.completed }}</td>
+      <td>
+        <a [routerLink]="['/deleteTask/',task.id]"
+           class="btn btn-success">
+          Edit
+        </a>
+        <a [routerLink]="['/deleteTask/',task.id]"
+           class="btn btn-danger">
+          Delete
+        </a>
+      </td>
     </tr>
   </tbody>
 </table>

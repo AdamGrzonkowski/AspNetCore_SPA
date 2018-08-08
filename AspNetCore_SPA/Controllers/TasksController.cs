@@ -19,7 +19,7 @@ namespace AspNetCore_SPA.Controllers
             _logger = logger;
         }
 
-        [HttpGet("getCompleted")]
+        [HttpGet("status/completed")]
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetCompletedAsync()
@@ -36,7 +36,7 @@ namespace AspNetCore_SPA.Controllers
             }
         }
 
-        [HttpGet("getNotCompleted")]
+        [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetNotCompletedAsync()

@@ -29,6 +29,17 @@ export class TaskComponent implements OnInit {
       });
   }
 
+  async updateTask() {
+    await this.taskService
+      .update(this.currentTask)
+      .subscribe(task => {
+        if (!this.currentTask.id) {
+          this.tasks.push(task);
+        }
+        this.currentTask = new Task();
+      });
+  }
+
   async deleteTask(task: Task) {
     await this.taskService.delete(task.id).subscribe(response => {
       var idx = this.tasks.indexOf(task);

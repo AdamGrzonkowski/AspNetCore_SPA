@@ -18,6 +18,10 @@ export class TaskService {
     return this.http.get<Array<Task>>(this.apiUrl);
   }
 
+  getAllNotCompleted(): Observable<Array<Task>> {
+    return this.http.get<Array<Task>>(this.apiUrl + '/status/completed');
+  }
+
   add(task: Task): Observable<Task> {
     return this.http.post<Task>(this.apiUrl, task);
   }
