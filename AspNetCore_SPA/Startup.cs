@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository;
 using Repository.Tasks;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace AspNetCore_SPA
 {
@@ -25,10 +26,15 @@ namespace AspNetCore_SPA
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // MVC and XSRF
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<SpaContext>(options => options.UseInMemoryDatabase("InMemoryDb"), ServiceLifetime.Scoped); // using in-memory db gives us opportunity to write abstraction early on and then easily change data store
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // Data access
+            services.AddDbContext<SpaContext>(options => options.UseInMemoryDatabase("InMemoryDb"), ServiceLifetime.Scoped); // using in-memory db gives us opportunity to write abstraction early on and then easily change data store
             services.AddScoped<ITaskRepository, TaskRepository>();
 
             // In production, the Angular files will be served from this directory
@@ -36,11 +42,27 @@ namespace AspNetCore_SPA
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "AspNetCore_SPA-API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IAntiforgery antiforgery)
         {
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AspNetCore_SPA-API V1");
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

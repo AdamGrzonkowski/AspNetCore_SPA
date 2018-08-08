@@ -36,9 +36,20 @@ namespace Repository
             return await _context.SaveChangesAsync();
         }
 
-        public T Find(Expression<Func<T, bool>> match)
+        public async Task<int> DeleteAsync(Guid id)
         {
-            return GetAll().SingleOrDefault(match);
+            T entity = await FindAsync(x => x.Id == id);
+            if (entity != null)
+            {
+                return await DeleteAsync(entity);
+            }
+
+            return 0;
+        }
+
+        public async Task<T> FindAsync(Expression<Func<T, bool>> match)
+        {
+            return await GetAll().SingleOrDefaultAsync(match);
         }
 
         public async Task<ICollection<T>> FindByAsync(Expression<Func<T, bool>> predicate)
@@ -66,14 +77,14 @@ namespace Repository
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<T> UpdateAsync(T t, Guid id)
+        public async Task<T> UpdateAsync(T t)
         {
             if (t == null)
             {
                 return null;
             }
 
-            T entity = await _context.Set<T>().FindAsync(id);
+            T entity = await _context.Set<T>().FindAsync(t.Id);
             if (entity != null)
             {
                 _context.Entry(entity).CurrentValues.SetValues(t);

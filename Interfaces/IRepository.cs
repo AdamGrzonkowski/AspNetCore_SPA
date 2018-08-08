@@ -19,12 +19,13 @@ namespace Interfaces
         Task<ICollection<T>> GetAllAsync();
         Task<T> GetAsync(int id);
 
-        T Find(Expression<Func<T, bool>> match);
+        Task<T> FindAsync(Expression<Func<T, bool>> match);
         Task<ICollection<T>> FindByAsync(Expression<Func<T, bool>> predicate);
 
-        Task<T> UpdateAsync(T t, Guid id);
+        Task<T> UpdateAsync(T t);
 
         Task<int> DeleteAsync(T entity);
+        Task<int> DeleteAsync(Guid id);
 
         Task<int> SaveAsync();
     }
