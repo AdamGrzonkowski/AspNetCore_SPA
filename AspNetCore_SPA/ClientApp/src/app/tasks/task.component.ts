@@ -9,15 +9,41 @@ import { Task, TaskService } from "./task.service";
 
 export class TaskComponent implements OnInit {
   tasks: Array<Task> = [];
-  public editing: boolean = false;
   currentTask: Task = new Task();
+
+  public editing: boolean = false;
+  public showCompleted: boolean = false;
 
   constructor(private taskService: TaskService) { }
 
   async ngOnInit() {
+    await this.getAll();
+  }
+
+  async toggleCompleted() {
+    if (!this.showCompleted) {
+      await this.getAll();
+    } else {
+      await this.getAllCompleted();
+    }
+  }
+
+  async getAllCompleted() {
+    await this.taskService
+      .getAllCompleted()
+      .subscribe(tasks => {
+        this.tasks = tasks;
+        this.showCompleted = false;
+      });
+  }
+
+  async getAll() {
     await this.taskService
       .getAll()
-      .subscribe(tasks => (this.tasks = tasks));
+      .subscribe(tasks => {
+        this.tasks = tasks;
+        this.showCompleted = true;
+      });
   }
 
   async upsertTask() {
@@ -34,10 +60,12 @@ export class TaskComponent implements OnInit {
   }
 
   async deleteTask(task: Task) {
-    await this.taskService.delete(task.id).subscribe(response => {
-      var idx = this.tasks.indexOf(task);
-      this.tasks.splice(idx, 1);
-    });
+    if (window.confirm('Are sure you want to delete this item ?')) {
+      await this.taskService.delete(task.id).subscribe(response => {
+        var idx = this.tasks.indexOf(task);
+        this.tasks.splice(idx, 1);
+      });
+    }
   }
 
   selectTask(task: Task) {

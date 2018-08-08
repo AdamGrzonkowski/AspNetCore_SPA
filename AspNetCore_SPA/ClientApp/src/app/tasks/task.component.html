@@ -8,6 +8,11 @@
    class="btn btn-info">
   Add
 </a>
+<a (click)="toggleCompleted()"
+   class="btn btn-default pull-right">
+  <span *ngIf="showCompleted">Show completed</span>
+  <span *ngIf="!showCompleted">Show ToDo</span>
+</a>
 
 <table class='table' *ngIf="tasks">
   <thead>
