@@ -1,10 +1,13 @@
+using Interfaces.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Repository;
+using Repository.Tasks;
 
 namespace AspNetCore_SPA
 {
@@ -21,6 +24,9 @@ namespace AspNetCore_SPA
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDbContext<SpaContext>(options => options.UseInMemoryDatabase("InMemoryDb")); // using in-memory db gives us opportunity to write abstraction early on and then easily change data store
+
+            services.AddScoped<ITaskRepository, TaskRepository>();  
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

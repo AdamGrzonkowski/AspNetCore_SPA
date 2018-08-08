@@ -1,7 +1,10 @@
 {
-  "name": "AspNetCore_SPA",
-  "version": "0.0.0",
+  "name": "aspnetcore_spa",
+  "version": "1.0.0",
   "license": "MIT",
+  "repository": {
+    "url": "https://github.com/AdamGrzonkowski/AspNetCore_SPA"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve --extract-css",
