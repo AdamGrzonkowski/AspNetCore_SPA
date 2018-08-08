@@ -6,8 +6,6 @@ import { Task, TaskService } from "./task.service";
   templateUrl: './task.component.html'
 })
 
-@Injectable()
-
 export class TaskComponent implements OnInit {
   tasks: Array<Task> = [];
   currentTask: Task = new Task();
