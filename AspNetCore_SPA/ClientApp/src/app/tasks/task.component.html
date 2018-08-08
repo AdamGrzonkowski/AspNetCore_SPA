@@ -1,0 +1,22 @@
+<h1>ToDo List</h1>
+
+<p>Simpl ToDo list.</p>
+
+<p *ngIf="!tasks"><em>Loading...</em></p>
+
+<table class='table' *ngIf="tasks">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Complete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let task of tasks">
+      <td>{{ task.name }}</td>
+      <td>{{ task.description }}</td>
+      <td>{{ task.completed }}</td>
+    </tr>
+  </tbody>
+</table>
