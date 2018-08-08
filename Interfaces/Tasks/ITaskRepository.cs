@@ -5,7 +5,7 @@ namespace Interfaces.Tasks
 {
     public interface ITaskRepository : IRepository<Entities.Tasks.Task>
     {
-        Task<ICollection<Entities.Tasks.Task>> GetAllCompleted();
-        Task<ICollection<Entities.Tasks.Task>> GetAllNotCompleted();
+        Task<ICollection<Entities.Tasks.Task>> GetAllCompletedAsync();
+        Task<ICollection<Entities.Tasks.Task>> GetAllNotCompletedAsync();
     }
 }

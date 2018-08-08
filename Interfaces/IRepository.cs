@@ -27,7 +27,5 @@ namespace Interfaces
         Task<int> DeleteAsync(T entity);
 
         Task<int> SaveAsync();
-
-        void Dispose();
     }
 }

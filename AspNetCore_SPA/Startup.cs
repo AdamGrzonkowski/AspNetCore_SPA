@@ -24,7 +24,7 @@ namespace AspNetCore_SPA
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<SpaContext>(options => options.UseInMemoryDatabase("InMemoryDb")); // using in-memory db gives us opportunity to write abstraction early on and then easily change data store
+            services.AddDbContext<SpaContext>(options => options.UseInMemoryDatabase("InMemoryDb"), ServiceLifetime.Scoped); // using in-memory db gives us opportunity to write abstraction early on and then easily change data store
 
             services.AddScoped<ITaskRepository, TaskRepository>();  
 

@@ -12,8 +12,7 @@ namespace Repository
     /// <inheritdoc />
     public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     {
-        private bool _disposed = false;
-        protected SpaContext _context;
+        protected SpaContext _context; // Core's DI takes care about disposing it
 
         public BaseRepository(SpaContext context)
         {
@@ -82,24 +81,6 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
             return entity;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-                _disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

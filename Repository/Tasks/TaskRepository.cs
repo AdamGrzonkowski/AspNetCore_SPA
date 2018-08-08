@@ -12,12 +12,12 @@ namespace Repository.Tasks
         {
         }
 
-        public async Task<ICollection<Entities.Tasks.Task>> GetAllCompleted()
+        public async Task<ICollection<Entities.Tasks.Task>> GetAllCompletedAsync()
         {
             return await GetAll().Where(x => x.Completed).ToListAsync();
         }
 
-        public async Task<ICollection<Entities.Tasks.Task>> GetAllNotCompleted()
+        public async Task<ICollection<Entities.Tasks.Task>> GetAllNotCompletedAsync()
         {
             return await GetAll().Where(x => x.Completed == false).ToListAsync();
         }
