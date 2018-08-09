@@ -15,3 +15,26 @@
 .form-control{
   width: 100%;
 }
+
+/* start table columns width */
+.noColumn{
+  width: 10%;
+}
+
+.nameColumn{
+  width: 20%;
+}
+
+.descriptionColumn{
+  width: 40%;
+}
+
+.completeColumn {
+  width: 10%;
+}
+
+.actionColumn{
+  width: 20%;
+}
+
+/* end table columns width */

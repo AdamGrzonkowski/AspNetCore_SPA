@@ -84,8 +84,14 @@ export class TaskComponent implements OnInit {
   }
 
   newTask() {
+    if (this.currentTask.id != undefined) {
+      this.editing = true;
+    }
+    else {
+      this.editing = !this.editing;
+    }
     this.currentTask = new Task();
-    this.editing = !this.editing;
+
     if (!this.editing) {
       this.errors.length = 0;
     }
@@ -99,8 +105,5 @@ export class TaskComponent implements OnInit {
         this.errors.push(responseError.error[key][i]);
       }
     }
-  }
-
-  private setWidthOfFormFields() {
   }
 }

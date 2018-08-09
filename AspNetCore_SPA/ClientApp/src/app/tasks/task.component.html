@@ -17,11 +17,11 @@
 <table class='table' *ngIf="tasks">
   <thead>
     <tr>
-      <th id="noHeader">No.</th>
-      <th id="nameHeader">Name</th>
-      <th id="descriptionHeader">Description</th>
-      <th id="completeHeader">Complete</th>
-      <th id="actionHeader">Action</th>
+      <th class="noColumn">No.</th>
+      <th class="nameColumn">Name</th>
+      <th class="descriptionColumn">Description</th>
+      <th class="completeColumn">Complete</th>
+      <th class="actionColumn">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -47,19 +47,21 @@
 <form class="form-inline" *ngIf="editing">
   <table class='table'>
     <tr>
-      <td id="nameFormField">
+      <td class="noColumn">
+      </td>
+      <td class="nameColumn">
         <label class="sr-only" for="name">Name</label>
         <input type="text" class="form-control edit-item" [(ngModel)]="currentTask.name" name="name" placeholder="Name">
       </td>
-      <td id="descriptionFormField">
+      <td class="descriptionColumn">
         <label class="sr-only" for="description">Description</label>
         <input type="text" class="form-control edit-item" [(ngModel)]="currentTask.description" name="description" placeholder="Description">
       </td>
-      <td id="completeFormField">
+      <td class="completeColumn">
         <label class="sr-only" for="completed">Completed</label>
         <input type="checkbox" class="form-control complete-button" [(ngModel)]="currentTask.completed" name="completed" placeholder="Completed">
       </td>
-      <td id="submitFormField">
+      <td class="actionColumn">
         <button type="submit" class="btn btn-primary" (click)="upsertTask()">Submit</button>
       </td>
     </tr>
