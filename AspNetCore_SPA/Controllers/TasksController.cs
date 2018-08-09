@@ -149,8 +149,8 @@ namespace AspNetCore_SPA.Controllers
                         {
                             _taskRepository.AddAsync(new Entities.Tasks.Task
                             {
-                                Name = "Test1",
-                                Description = "SomeTask"
+                                Name = "Write to Adam",
+                                Description = "Give Adam some feedback on this app"
                             });
 
                             _taskRepository.AddAsync(new Entities.Tasks.Task
@@ -162,8 +162,9 @@ namespace AspNetCore_SPA.Controllers
 
                             _taskRepository.AddAsync(new Entities.Tasks.Task
                             {
-                                Name = "Write app for bim.point.com",
-                                Description = "SPA web app based on ASP.NET Core"
+                                Name = "Write SPA app",
+                                Description = "Create SPA web app based on ASP.NET Core",
+                                Completed = true
                             });
 
                             _taskRepository.SaveAsync();
