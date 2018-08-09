@@ -20,3 +20,4 @@ Technologies used
 * Bootstrap for layout and styling
 * Swagger for documenting
 * Entity Framework Core 2.1 for data access (in-memory)
+* Azure App Services (for hosting)
