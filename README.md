@@ -12,3 +12,11 @@ Requirements to be met:
 2.       Use simple collection as in-memory database.
 3.       Make sure you have validation in place.
 4.       Write some unit tests.
+
+Technologies used
+===================
+* ASP.NET Core 2.1 and C# for cross-platform server-side code
+* Angular 6.1 and TypeScript for client-side code
+* Bootstrap for layout and styling
+* Swagger for documenting
+* Entity Framework Core 2.1 for data access (in-memory)
