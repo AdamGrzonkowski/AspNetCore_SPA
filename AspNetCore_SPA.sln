@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interfaces", "Interfaces\Interfaces.csproj", "{8E784E67-133F-4FFB-960A-747C1D3EF1A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalConfiguration", "GlobalConfiguration\GlobalConfiguration.csproj", "{CD5E733E-126F-4377-BCEF-BCE5692B8EDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalConfiguration", "GlobalConfiguration\GlobalConfiguration.csproj", "{CD5E733E-126F-4377-BCEF-BCE5692B8EDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore_SPA_Tests", "AspNetCore_SPA_Tests\AspNetCore_SPA_Tests.csproj", "{95AFF6B1-8F43-4615-AC93-25E60A6EACC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,10 @@ Global
 		{CD5E733E-126F-4377-BCEF-BCE5692B8EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD5E733E-126F-4377-BCEF-BCE5692B8EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD5E733E-126F-4377-BCEF-BCE5692B8EDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95AFF6B1-8F43-4615-AC93-25E60A6EACC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95AFF6B1-8F43-4615-AC93-25E60A6EACC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95AFF6B1-8F43-4615-AC93-25E60A6EACC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95AFF6B1-8F43-4615-AC93-25E60A6EACC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

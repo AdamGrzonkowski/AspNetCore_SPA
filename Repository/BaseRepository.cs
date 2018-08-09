@@ -34,7 +34,10 @@ namespace Repository
         {
             // do not remove entirely. Instead, use deferred deletion and only mark as deleted.
             entity.IsDeleted = true;
+            entity.UpdTs = DateTime.Now;
+
             _context.Entry(entity).Property(x => x.IsDeleted).IsModified = true;
+            _context.Entry(entity).Property(x => x.UpdTs).IsModified = true;
 
             return await SaveAsync();
         }
