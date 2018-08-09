@@ -6,10 +6,12 @@ Functionalities
 * List my tasks
 * Add new task
 * Edit / Delete Tasks
+* Possibility to toggle between completed and not completed tasks
+* Auto-generated documentation of API
 
 Requirements to be met:
 1.       Use Typescript.
-2.       Use simple collection as in-memory database.
+2.       Use in-memory database.
 3.       Make sure you have validation in place.
 4.       Write some unit tests.
 
