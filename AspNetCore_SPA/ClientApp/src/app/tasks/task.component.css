@@ -7,3 +7,11 @@
 .edit-item{
   margin: 1px;
 }
+
+.invalid{
+  color: red;
+}
+
+.form-control{
+  width: 100%;
+}

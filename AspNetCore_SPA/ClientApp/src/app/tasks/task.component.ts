@@ -9,6 +9,7 @@ import { Task, TaskService } from "./task.service";
 
 export class TaskComponent implements OnInit {
   tasks: Array<Task> = [];
+  errors: Array<string> = [];
   currentTask: Task = new Task();
 
   public editing: boolean = false;
@@ -47,6 +48,8 @@ export class TaskComponent implements OnInit {
   }
 
   async upsertTask() {
+    this.errors.length = 0;
+
     await this.taskService
       .upsert(this.currentTask)
       .subscribe(task => {
@@ -56,7 +59,8 @@ export class TaskComponent implements OnInit {
 
         this.currentTask = new Task();
         this.editing = false;
-      });
+      },
+        error => this.parseErrors(error));
   }
 
   async deleteTask(task: Task) {
@@ -72,6 +76,7 @@ export class TaskComponent implements OnInit {
     if (this.currentTask == task) {
       this.currentTask = new Task();
       this.editing = false;
+      this.errors.length = 0;
     } else {
       this.currentTask = task;
       this.editing = true;
@@ -81,5 +86,21 @@ export class TaskComponent implements OnInit {
   newTask() {
     this.currentTask = new Task();
     this.editing = !this.editing;
+    if (!this.editing) {
+      this.errors.length = 0;
+    }
+  }
+
+  // Processes validation error messages from ASP.NET Core Model Validation.
+  // Writing second validation in Angular is not necessary then.
+  private parseErrors(responseError) {
+    for (var key in responseError.error) {
+      for (var i = 0; i < responseError.error[key].length; i++) {
+        this.errors.push(responseError.error[key][i]);
+      }
+    }
+  }
+
+  private setWidthOfFormFields() {
   }
 }

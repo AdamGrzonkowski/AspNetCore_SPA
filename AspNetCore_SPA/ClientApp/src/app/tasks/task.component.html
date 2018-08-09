@@ -17,11 +17,11 @@
 <table class='table' *ngIf="tasks">
   <thead>
     <tr>
-      <th>No.</th>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Complete</th>
-      <th>Action</th>
+      <th id="noHeader">No.</th>
+      <th id="nameHeader">Name</th>
+      <th id="descriptionHeader">Description</th>
+      <th id="completeHeader">Complete</th>
+      <th id="actionHeader">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -45,14 +45,27 @@
 </table>
 
 <form class="form-inline" *ngIf="editing">
-  <label class="sr-only" for="name">Name</label>
-  <input type="text" class="form-control edit-item" [(ngModel)]="currentTask.name" name="name" placeholder="Name">
-
-  <label class="sr-only" for="description">Description</label>
-  <input type="text" class="form-control edit-item" [(ngModel)]="currentTask.description" name="description" placeholder="Description">
-
-  <label class="sr-only" for="completed">Completed</label>
-  Complete:<input type="checkbox" class="form-control complete-button" [(ngModel)]="currentTask.completed" name="completed" placeholder="Completed">
-
-  <button type="submit" class="btn btn-primary" (click)="upsertTask()">Submit</button>
+  <table class='table'>
+    <tr>
+      <td id="nameFormField">
+        <label class="sr-only" for="name">Name</label>
+        <input type="text" class="form-control edit-item" [(ngModel)]="currentTask.name" name="name" placeholder="Name">
+      </td>
+      <td id="descriptionFormField">
+        <label class="sr-only" for="description">Description</label>
+        <input type="text" class="form-control edit-item" [(ngModel)]="currentTask.description" name="description" placeholder="Description">
+      </td>
+      <td id="completeFormField">
+        <label class="sr-only" for="completed">Completed</label>
+        <input type="checkbox" class="form-control complete-button" [(ngModel)]="currentTask.completed" name="completed" placeholder="Completed">
+      </td>
+      <td id="submitFormField">
+        <button type="submit" class="btn btn-primary" (click)="upsertTask()">Submit</button>
+      </td>
+    </tr>
+  </table>
 </form>
+
+<ul *ngFor="let er of errors">
+  <li class="invalid">{{ er }}</li>
+</ul>
