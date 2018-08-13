@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Entities\Entities.csproj" />
-    <ProjectReference Include="..\GlobalConfiguration\GlobalConfiguration.csproj" />
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
+    <ProjectReference Include="..\..\Core\Domain.Model\Domain.Model.csproj" />
+    <ProjectReference Include="..\..\Core\GlobalConfiguration\GlobalConfiguration.csproj" />
+    <ProjectReference Include="..\..\Core\Domain.Services.Interfaces\Domain.Services.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

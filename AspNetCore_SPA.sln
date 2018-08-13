@@ -3,21 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore_SPA", "AspNetCore_SPA\AspNetCore_SPA.csproj", "{9255A399-5679-4DC8-B5E5-DF9BADA8A3FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore_SPA", "Web\AspNetCore_SPA\AspNetCore_SPA.csproj", "{9255A399-5679-4DC8-B5E5-DF9BADA8A3FE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Spa_Core", "Spa_Core", "{F1CCCAC5-869E-4D81-B447-89874BB442F1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F1CCCAC5-869E-4D81-B447-89874BB442F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Spa_Implementations", "Spa_Implementations", "{37BD79BC-3AE5-4C46-ADBE-AE5116CA8D12}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{37BD79BC-3AE5-4C46-ADBE-AE5116CA8D12}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{03F0BB7F-E370-4669-9037-9C3C6F786CC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Model", "Core\Domain.Model\Domain.Model.csproj", "{03F0BB7F-E370-4669-9037-9C3C6F786CC9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{FC43151C-7541-4CD1-B079-A9430384A509}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Services", "Infrastructure\Domain.Services\Domain.Services.csproj", "{FC43151C-7541-4CD1-B079-A9430384A509}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interfaces", "Interfaces\Interfaces.csproj", "{8E784E67-133F-4FFB-960A-747C1D3EF1A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Services.Interfaces", "Core\Domain.Services.Interfaces\Domain.Services.Interfaces.csproj", "{8E784E67-133F-4FFB-960A-747C1D3EF1A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalConfiguration", "GlobalConfiguration\GlobalConfiguration.csproj", "{CD5E733E-126F-4377-BCEF-BCE5692B8EDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalConfiguration", "Core\GlobalConfiguration\GlobalConfiguration.csproj", "{CD5E733E-126F-4377-BCEF-BCE5692B8EDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore_SPA_Tests", "AspNetCore_SPA_Tests\AspNetCore_SPA_Tests.csproj", "{95AFF6B1-8F43-4615-AC93-25E60A6EACC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore_SPA_Tests", "Tests\AspNetCore_SPA_Tests\AspNetCore_SPA_Tests.csproj", "{95AFF6B1-8F43-4615-AC93-25E60A6EACC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{9CC4AB8D-9A5A-4CFA-B63D-F0D313B5004A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DC0B5406-0393-47C0-97BD-7EF2A8BBCE68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +58,12 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{9255A399-5679-4DC8-B5E5-DF9BADA8A3FE} = {9CC4AB8D-9A5A-4CFA-B63D-F0D313B5004A}
 		{03F0BB7F-E370-4669-9037-9C3C6F786CC9} = {F1CCCAC5-869E-4D81-B447-89874BB442F1}
 		{FC43151C-7541-4CD1-B079-A9430384A509} = {37BD79BC-3AE5-4C46-ADBE-AE5116CA8D12}
 		{8E784E67-133F-4FFB-960A-747C1D3EF1A7} = {F1CCCAC5-869E-4D81-B447-89874BB442F1}
 		{CD5E733E-126F-4377-BCEF-BCE5692B8EDE} = {F1CCCAC5-869E-4D81-B447-89874BB442F1}
+		{95AFF6B1-8F43-4615-AC93-25E60A6EACC3} = {DC0B5406-0393-47C0-97BD-7EF2A8BBCE68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9BE7E93F-1BC2-49EE-BA8D-87CFF4622404}
