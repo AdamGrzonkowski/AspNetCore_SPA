@@ -1,5 +1,5 @@
 # AspNetCore_SPA
-Simple ToDo application (more like Proof of Concept) using ASP.NET Core with Single Page Application approach.
+Simple ToDo application (more like Proof of Concept) using ASP.NET Core (Web API) with Single Page Application approach (Angular).
 
 Functionalities
 ===================
