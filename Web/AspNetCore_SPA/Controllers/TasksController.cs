@@ -103,7 +103,7 @@ namespace AspNetCore_SPA.Controllers
         /// <param name="task">Body of task.</param>
         /// <returns>Newly created / updated task record.</returns>
         /// <remarks>
-        /// Location response header's value may be used to retrieve created / updated object.
+        /// Location response header's value may be used to retrieve newly created object.
         /// </remarks>
         /// <response code="200">Task updated successfully.</response>
         /// <response code="201">Task created successfully.</response>
