@@ -127,7 +127,7 @@ namespace AspNetCore_SPA.Controllers
                     _logger.LogDebug($"UpdateAsync with Name:'{task.Name}' successful.");
                     await _service.SaveAsync();
 
-                    return Ok(task);
+                    return Ok(task.Id);
                 }
                 else
                 {
