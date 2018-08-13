@@ -25,9 +25,13 @@ namespace AspNetCore_SPA.Controllers
             SeedTasks();
         }
 
+        /// <summary>
+        /// Completed tasks.
+        /// </summary>
+        /// <returns>Task records with status completed.</returns>
+        /// <response code="200">Records returned.</response>
         [HttpGet("status/completed")]
         [ProducesResponseType(200)]
-        [ProducesResponseType(500)]
         public async Task<IActionResult> GetCompletedAsync()
         {
             try
@@ -42,9 +46,13 @@ namespace AspNetCore_SPA.Controllers
             }
         }
 
+        /// <summary>
+        /// Not completed tasks.
+        /// </summary>
+        /// <returns>Task records with status not completed.</returns>
+        /// <response code="200">Records returned.</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        [ProducesResponseType(500)]
         public async Task<IActionResult> GetNotCompletedAsync()
         {
             try
@@ -59,10 +67,16 @@ namespace AspNetCore_SPA.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns Task by id if it exists.
+        /// </summary>
+        /// <param name="id">Id of task.</param>
+        /// <returns>Body of task.</returns>
+        /// <response code="200">Record found.</response>
+        /// <response code="404">Record with given id was not found.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(TaskModel))]
         [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
@@ -83,11 +97,21 @@ namespace AspNetCore_SPA.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a new Task record or updates existing one if it already exists.
+        /// </summary>
+        /// <param name="task">Body of task.</param>
+        /// <returns>Newly created / updated task record' id.</returns>
+        /// <remarks>
+        /// Location response header's value may be used to retrieve created / updated object.
+        /// </remarks>
+        /// <response code="200">Task updated successfully.</response>
+        /// <response code="201">Task created successfully.</response>
+        /// <response code="400">Passed model was invalid (validation rules were not met).</response>
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(TaskModel))]
         [ProducesResponseType(201, Type = typeof(TaskModel))]
         [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         public async Task<IActionResult> PostAsync([FromBody]TaskModel task)
         {
             try
@@ -103,7 +127,7 @@ namespace AspNetCore_SPA.Controllers
                     _logger.LogDebug($"UpdateAsync with Name:'{task.Name}' successful.");
                     await _service.SaveAsync();
 
-                    return Ok(task.Id);
+                    return Ok(task);
                 }
                 else
                 {
@@ -111,7 +135,7 @@ namespace AspNetCore_SPA.Controllers
                     _logger.LogDebug($"Add with Name:'{task.Name}' successful.");
                     await _service.SaveAsync();
 
-                    return CreatedAtAction(nameof(GetByIdAsync), new { id = createdTaskId }, task);
+                    return CreatedAtAction(nameof(GetByIdAsync), new { id = createdTaskId }, createdTaskId);
                 }
             }
             catch (Exception ex)
@@ -121,18 +145,35 @@ namespace AspNetCore_SPA.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes Task record if it exists.
+        /// </summary>
+        /// <param name="id">Id of task.</param>
+        /// <returns>No content.</returns>
+        /// <response code="204">Deletion successful.</response>
+        /// <response code="404">Record with given id was not found.</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             try
             {
-                await _service.DeleteAsync(id);
-                await _service.SaveAsync();
+                bool exists = await _service.ExistsAsync(id);
+                if (exists)
+                {
+                    await _service.DeleteAsync(id);
+                    await _service.SaveAsync();
 
-                _logger.LogInformation($"DeleteAsync({id}) OK.");
-                return StatusCode(StatusCodes.Status204NoContent);
+                    _logger.LogInformation($"DeleteAsync({id}) OK.");
+                    return NoContent();
+                }
+                else
+                {
+                    _logger.LogWarning($"GetById({id}) NOT FOUND during DeleteAsync({id})");
+                    return NotFound();
+                }
+
             }
             catch (Exception ex)
             {
