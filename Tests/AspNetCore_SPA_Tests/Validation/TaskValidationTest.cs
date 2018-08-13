@@ -1,6 +1,6 @@
-﻿using AspNetCore_SPA_Tests.Builders;
+﻿using Application.Model.Tasks;
+using AspNetCore_SPA_Tests.Builders;
 using AspNetCore_SPA_Tests.Helpers;
-using Entities.Tasks;
 using NUnit.Framework;
 
 namespace AspNetCore_SPA_Tests.Validation
@@ -11,7 +11,7 @@ namespace AspNetCore_SPA_Tests.Validation
         [Test]
         public void ModelValidationTest()
         {
-            var model = new TaskBuilder().WithName("SomeName").Build();
+            var model = new TaskModelBuilder().WithName("SomeName").Build();
 
             bool isValid = ValidationHelper.TryValidateObject(model);
 
@@ -22,9 +22,9 @@ namespace AspNetCore_SPA_Tests.Validation
         [TestCaseSource(typeof(TestCasesProvider), nameof(TestCasesProvider.StringTestCases))]
         public void ValidateNameTest(string input)
         {
-            var model = new TaskBuilder().WithName(input).Build();
+            var model = new TaskModelBuilder().WithName(input).Build();
 
-            bool isValid = ValidationHelper.TryValidateProperty(model, model.Name, nameof(Task.Name));
+            bool isValid = ValidationHelper.TryValidateProperty(model, model.Name, nameof(TaskModel.Name));
             ValidationHelper.CheckValidationRules(isValid, () =>
                 !string.IsNullOrWhiteSpace(model.Name) && model.Name.Length >= 2 && model.Name.Length <= 20);
         }
@@ -33,9 +33,9 @@ namespace AspNetCore_SPA_Tests.Validation
         [TestCaseSource(typeof(TestCasesProvider), nameof(TestCasesProvider.StringTestCases))]
         public void ValidateDescriptionTest(string input)
         {
-            var model = new TaskBuilder().WithDescription(input).Build();
+            var model = new TaskModelBuilder().WithDescription(input).Build();
 
-            bool isValid = ValidationHelper.TryValidateProperty(model, model.Description, nameof(Task.Description));
+            bool isValid = ValidationHelper.TryValidateProperty(model, model.Description, nameof(TaskModel.Description));
             ValidationHelper.CheckValidationRules(isValid, () => model.Description == null || model.Description?.Length <= 100);
         }
     }

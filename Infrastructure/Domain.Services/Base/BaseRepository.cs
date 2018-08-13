@@ -1,4 +1,4 @@
-﻿using Entities.Base;
+﻿using Domain.Model.Base;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Repository
+namespace Repository.Base
 {
     /// <inheritdoc />
     public class BaseRepository<T> : IRepository<T> where T : BaseEntity
@@ -19,18 +19,17 @@ namespace Repository
             _context = context;
         }
 
-        public async Task<T> AddAsync(T t)
+        public Guid Add(T t)
         {
             DateTime dt = DateTime.Now;
             t.InsTs = dt;
             t.UpdTs = dt;
 
             _context.Set<T>().Add(t);
-            await SaveAsync();
-            return t;
+            return t.Id;
         }
 
-        public async Task<int> DeleteAsync(T entity)
+        public void Delete(T entity)
         {
             // do not remove entirely. Instead, use deferred deletion and only mark as deleted.
             entity.IsDeleted = true;
@@ -38,19 +37,15 @@ namespace Repository
 
             _context.Entry(entity).Property(x => x.IsDeleted).IsModified = true;
             _context.Entry(entity).Property(x => x.UpdTs).IsModified = true;
-
-            return await SaveAsync();
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             T entity = await FindAsync(x => x.Id == id);
             if (entity != null)
             {
-                return await DeleteAsync(entity);
+                Delete(entity);
             }
-
-            return 0;
         }
 
         public async Task<bool> ExistsAsync(Expression<Func<T, bool>> match)
@@ -63,7 +58,7 @@ namespace Repository
             return await GetAll().SingleOrDefaultAsync(match);
         }
 
-        public async Task<ICollection<T>> FindByAsync(Expression<Func<T, bool>> predicate)
+        public async Task<ICollection<T>> FindAllAsync(Expression<Func<T, bool>> predicate)
         {
             return await GetAll().Where(predicate).ToListAsync();
         }
@@ -78,7 +73,7 @@ namespace Repository
             return await GetAll().ToListAsync();
         }
 
-        public async Task<T> GetAsync(int id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
@@ -88,11 +83,11 @@ namespace Repository
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<T> UpdateAsync(T t)
+        public async Task UpdateAsync(T t)
         {
             if (t == null)
             {
-                return null;
+                return;
             }
 
             T entity = await _context.Set<T>().FindAsync(t.Id);
@@ -106,9 +101,7 @@ namespace Repository
                 _context.Entry(entity).Property(x => x.InsTs).IsModified = false;
 
                 entity.UpdTs = DateTime.Now;
-                await SaveAsync();
             }
-            return entity;
         }
     }
 }

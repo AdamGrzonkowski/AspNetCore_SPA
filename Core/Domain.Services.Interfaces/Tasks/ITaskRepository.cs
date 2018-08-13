@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace Interfaces.Tasks
 {
-    public interface ITaskRepository : IRepository<Entities.Tasks.Task>
+    public interface ITaskRepository : IRepository<Domain.Model.Tasks.Task>
     {
-        Task<ICollection<Entities.Tasks.Task>> GetAllCompletedAsync();
-        Task<ICollection<Entities.Tasks.Task>> GetAllNotCompletedAsync();
+        Task<ICollection<Domain.Model.Tasks.Task>> GetAllCompletedAsync();
+        Task<ICollection<Domain.Model.Tasks.Task>> GetAllNotCompletedAsync();
     }
 }

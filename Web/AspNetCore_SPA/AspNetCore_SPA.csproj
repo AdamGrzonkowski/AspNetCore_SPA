@@ -26,7 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Application.Services.Interfaces\Application.Services.Interfaces.csproj" />
     <ProjectReference Include="..\..\Core\GlobalConfiguration\GlobalConfiguration.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Application.Services\Application.Services.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Domain.Services\Domain.Services.csproj" />
   </ItemGroup>
 

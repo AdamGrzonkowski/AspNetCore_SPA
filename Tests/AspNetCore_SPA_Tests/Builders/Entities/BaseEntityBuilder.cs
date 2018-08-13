@@ -1,4 +1,4 @@
-﻿using Entities.Base;
+﻿using Domain.Model.Base;
 using System;
 
 namespace AspNetCore_SPA_Tests.Builders.Entities

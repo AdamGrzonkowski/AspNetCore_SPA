@@ -1,3 +1,5 @@
+using Application.Services.Interfaces.Tasks;
+using Application.Services.Tasks;
 using GlobalConfiguration;
 using Interfaces.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
@@ -53,7 +55,9 @@ namespace AspNetCore_SPA
 
             // Dependency Injection
             services.AddSingleton<IGlobalConfig, GlobalConfig>();
+            services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<ITaskRepository, TaskRepository>();
+            services.AddScoped<ITaskMapper, TaskMapper>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

@@ -1,5 +1,5 @@
 ﻿using AspNetCore_SPA_Tests.Builders.Entities;
-using Entities.Tasks;
+using Domain.Model.Tasks;
 
 namespace AspNetCore_SPA_Tests.Builders
 {

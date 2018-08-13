@@ -1,9 +1,10 @@
 using AspNetCore_SPA_Tests.Builders;
 using AspNetCore_SPA_Tests.Helpers;
-using Entities.Tasks;
+using Domain.Model.Tasks;
 using Interfaces.Tasks;
 using NUnit.Framework;
 using Repository;
+using Repository.Base;
 using Repository.Tasks;
 using System;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace AspNetCore_SPA_Tests.Repository
 
         [Test]
         [TestOf(typeof(BaseRepository<>))]
-        public void AddAsyncTest()
+        public void Record_Is_Not_Persisted_Without_Calling_SaveAsync()
         {
             int numberOfItems = _context.Set<Task>().Count();
             Task newRecord = new TaskBuilder().WithName("NewTask").Build();
@@ -33,7 +34,26 @@ namespace AspNetCore_SPA_Tests.Repository
             DateTime insTsPreAdd = newRecord.InsTs;
             DateTime updTsPreAdd = newRecord.UpdTs;
 
-            _repo.AddAsync(newRecord);
+            _repo.Add(newRecord);
+
+            var records = _context.Set<Task>().ToList();
+
+            Assert.AreEqual(numberOfItems, records.Count);
+            Assert.That(!records.Contains(newRecord));
+        }
+
+        [Test]
+        [TestOf(typeof(BaseRepository<>))]
+        public void AddTest()
+        {
+            int numberOfItems = _context.Set<Task>().Count();
+            Task newRecord = new TaskBuilder().WithName("NewTask").Build();
+
+            DateTime insTsPreAdd = newRecord.InsTs;
+            DateTime updTsPreAdd = newRecord.UpdTs;
+
+            _repo.Add(newRecord);
+            _repo.SaveAsync();
 
             var records = _context.Set<Task>().ToList();
 
@@ -68,7 +88,7 @@ namespace AspNetCore_SPA_Tests.Repository
 
         [Test]
         [TestOf(typeof(BaseRepository<>))]
-        public void DeleteAsyncTest()
+        public void DeleteTest()
         {
             int numberOfItems = _context.Set<Task>().Count();
             Task record = _context.Set<Task>().First();
@@ -77,7 +97,7 @@ namespace AspNetCore_SPA_Tests.Repository
             DateTime updTsPreAdd = record.UpdTs;
             bool isDeletedPreDel = record.IsDeleted;
 
-            _repo.DeleteAsync(record);
+            _repo.Delete(record);
 
             var records = _context.Set<Task>().ToList();
 

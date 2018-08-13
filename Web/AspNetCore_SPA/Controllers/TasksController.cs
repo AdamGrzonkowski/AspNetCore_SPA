@@ -1,4 +1,5 @@
-﻿using Interfaces.Tasks;
+﻿using Application.Model.Tasks;
+using Application.Services.Interfaces.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,16 +11,16 @@ namespace AspNetCore_SPA.Controllers
     [Route("api/tasks")]
     public class TasksController : Controller
     {
-        private readonly ITaskRepository _taskRepository;
+        private readonly ITaskService _service;
         private readonly ILogger _logger;
 
-        private object _lockObject = new object();
+        private readonly object _lockObject = new object();
         private static bool _seeded;
 
-        public TasksController(ITaskRepository taskRepository, ILogger<TasksController> logger)
+        public TasksController(ILogger<TasksController> logger, ITaskService service)
         {
-            _taskRepository = taskRepository;
             _logger = logger;
+            _service = service;
 
             SeedTasks();
         }
@@ -31,7 +32,7 @@ namespace AspNetCore_SPA.Controllers
         {
             try
             {
-                var result = await _taskRepository.GetAllCompletedAsync();
+                var result = await _service.GetAllCompletedAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -48,7 +49,7 @@ namespace AspNetCore_SPA.Controllers
         {
             try
             {
-                var result = await _taskRepository.GetAllNotCompletedAsync();
+                var result = await _service.GetAllNotCompletedAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -59,14 +60,14 @@ namespace AspNetCore_SPA.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(Entities.Tasks.Task))]
+        [ProducesResponseType(200, Type = typeof(TaskModel))]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
             {
-                var result = await _taskRepository.FindAsync(x => x.Id == id);
+                var result = await _service.GetByIdAsync(id);
                 if (result == null)
                 {
                     _logger.LogWarning($"GetById({id}) NOT FOUND");
@@ -83,10 +84,11 @@ namespace AspNetCore_SPA.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(Entities.Tasks.Task))]
+        [ProducesResponseType(200, Type = typeof(TaskModel))]
+        [ProducesResponseType(201, Type = typeof(TaskModel))]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> PostAsync([FromBody]Entities.Tasks.Task task)
+        public async Task<IActionResult> PostAsync([FromBody]TaskModel task)
         {
             try
             {
@@ -95,20 +97,22 @@ namespace AspNetCore_SPA.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (await _taskRepository.ExistsAsync(x => x.Id == task.Id))
+                if (await _service.ExistsAsync(task.Id))
                 {
-                    await _taskRepository.UpdateAsync(task);
+                    await _service.UpdateAsync(task);
                     _logger.LogDebug($"UpdateAsync with Name:'{task.Name}' successful.");
+                    await _service.SaveAsync();
+
+                    return Ok(task.Id);
                 }
                 else
                 {
-                    await _taskRepository.AddAsync(task);
-                    _logger.LogDebug($"AddAsync with Name:'{task.Name}' successful.");
+                    Guid createdTaskId = _service.Add(task);
+                    _logger.LogDebug($"Add with Name:'{task.Name}' successful.");
+                    await _service.SaveAsync();
+
+                    return CreatedAtAction(nameof(GetByIdAsync), new { id = createdTaskId }, task);
                 }
-
-                await _taskRepository.SaveAsync();
-
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = task.Id }, task);
             }
             catch (Exception ex)
             {
@@ -118,17 +122,17 @@ namespace AspNetCore_SPA.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult> DeleteAsync(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             try
             {
-                int result = await _taskRepository.DeleteAsync(id);
-                await _taskRepository.SaveAsync();
+                await _service.DeleteAsync(id);
+                await _service.SaveAsync();
 
                 _logger.LogInformation($"DeleteAsync({id}) OK.");
-                return Ok(result);
+                return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception ex)
             {
@@ -137,7 +141,7 @@ namespace AspNetCore_SPA.Controllers
             }
         }
 
-        private bool SeedTasks()
+        private void SeedTasks()
         {
             try
             {
@@ -147,40 +151,38 @@ namespace AspNetCore_SPA.Controllers
                     {
                         if (_seeded == false)
                         {
-                            _taskRepository.AddAsync(new Entities.Tasks.Task
+                            _service.Add(new TaskModel
                             {
                                 Name = "Write to Adam",
                                 Description = "Give Adam some feedback on this app"
                             });
 
-                            _taskRepository.AddAsync(new Entities.Tasks.Task
+                            _service.Add(new TaskModel
                             {
                                 Name = "Get eggs",
                                 Description = "From the local grocery"
                             });
 
 
-                            _taskRepository.AddAsync(new Entities.Tasks.Task
+                            _service.Add(new TaskModel
                             {
                                 Name = "Write SPA app",
                                 Description = "Create SPA web app based on ASP.NET Core",
                                 Completed = true
                             });
 
-                            _taskRepository.SaveAsync();
+                            _service.SaveAsync();
                             _seeded = true;
 
                             _logger.LogDebug("Db seeded with sample tasks records");
-                            return true;
                         }
                     }
                 }
-                return false;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return false;
+                _seeded = false;
             }
         }
     }

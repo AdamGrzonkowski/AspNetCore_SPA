@@ -1,4 +1,4 @@
-﻿using Entities.Tasks;
+﻿using Domain.Model.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository
