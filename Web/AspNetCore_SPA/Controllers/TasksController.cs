@@ -101,7 +101,7 @@ namespace AspNetCore_SPA.Controllers
         /// Creates a new Task record or updates existing one if it already exists.
         /// </summary>
         /// <param name="task">Body of task.</param>
-        /// <returns>Newly created / updated task record' id.</returns>
+        /// <returns>Newly created / updated task record.</returns>
         /// <remarks>
         /// Location response header's value may be used to retrieve created / updated object.
         /// </remarks>
@@ -127,15 +127,16 @@ namespace AspNetCore_SPA.Controllers
                     _logger.LogDebug($"UpdateAsync with Name:'{task.Name}' successful.");
                     await _service.SaveAsync();
 
-                    return Ok(task.Id);
+                    return Ok(task);
                 }
                 else
                 {
                     Guid createdTaskId = _service.Add(task);
+                    task.Id = createdTaskId;
                     _logger.LogDebug($"Add with Name:'{task.Name}' successful.");
                     await _service.SaveAsync();
 
-                    return CreatedAtAction(nameof(GetByIdAsync), new { id = createdTaskId }, createdTaskId);
+                    return CreatedAtAction(nameof(GetByIdAsync), new { id = createdTaskId }, task);
                 }
             }
             catch (Exception ex)
